@@ -1,0 +1,3574 @@
+Last login: Fri Jul  3 21:06:29 on ttys003
+nina@MacBook-Pro-von-Nina ~ % cd /Users/nina/Documents/GitHub/ethical-multi-agent-orchestrator 
+nina@MacBook-Pro-von-Nina ethical-multi-agent-orchestrator % grep "chat_api_version" chat.py
+grep -A2 "def __init__" agents/unstructured_data_agent.py | head -5
+            chat_api_version="preview",
+    def __init__(
+        self,
+        mongo_uri: str,
+nina@MacBook-Pro-von-Nina ethical-multi-agent-orchestrator % ls -la | grep env
+nina@MacBook-Pro-von-Nina ethical-multi-agent-orchestrator % sed -i '' 's/chat_api_version="preview"/chat_api_version="2024-12-01-preview"/' chat.py
+sed -i '' 's/chat_api_version: str = "preview"/chat_api_version: str = "2024-12-01-preview"/' agents/unstructured_data_agent.py
+sed -i '' 's/api_version="preview"/api_version="2024-12-01-preview"/' agents/structured_data_agent.py
+nina@MacBook-Pro-von-Nina ethical-multi-agent-orchestrator % grep "api_version" chat.py agents/structured_data_agent.py agents/unstructured_data_agent.py
+chat.py:            embedding_api_version="2023-06-01-preview",
+chat.py:            chat_api_version="2024-12-01-preview",
+agents/structured_data_agent.py:        api_version="2024-12-01-preview",
+agents/structured_data_agent.py:            api_version=api_version,
+agents/unstructured_data_agent.py:        embedding_api_version: str = "2023-06-01-preview",
+agents/unstructured_data_agent.py:        chat_api_version: str = "2024-12-01-preview",
+agents/unstructured_data_agent.py:            openai_api_version=embedding_api_version,
+agents/unstructured_data_agent.py:            api_version=chat_api_version,
+
+EOF
+nina@MacBook-Pro-von-Nina ethical-multi-agent-orchestrator % python3 chat.py
+Connecting to Azure for authentication.
+To sign in, use a web browser to open the page https://login.microsoft.com/device and enter the code FBTGGD7QK to authenticate.
+
+                                   /\ 
+                                  /  \ 
+                                 /____\ 
+                ________________/______\_______________________
+               /                                               \
+              /_________________________________________________\
+             |   ____      ____      ____      ____      ____   |
+             |  | ▇▇ |    | ▇▇ |    | ▇▇ |    | ▇▇ |    | ▇▇ |  |
+             |  | ▇▇ |    | ▇▇ |    | ▇▇ |    | ▇▇ |    | ▇▇ |  |
+             |  |____|    |____|    |____|    |____|    |____|  |
+             |                                                  |
+             |        NEIGHBORHOOD INSIGHTS & DATA ASSISTANT    |
+             |__________________________________________________|
+    
+
+ This AI-powered assistant provides automatically generated responses. Please use discretion, as answers may contain inaccuracies or errors.
+
+Data comes from a structured demographics database, permit documents in NoSQL, and images stored in Azure.
+Data remains in its original systems and is not copied into the assistant.
+Embeddings and other AI artifacts are generated at runtime and are not permanently stored.
+
+Loading Structured Data Agent
+-------------------------------
+
+Loading Unstructured Data Agent
+---------------------------------
+/Users/nina/Documents/GitHub/ethical-multi-agent-orchestrator/agents/unstructured_data_agent.py:33: UserWarning: You appear to be connected to a CosmosDB cluster. For more information regarding feature compatibility and support please visit https://www.mongodb.com/supportability/cosmosdb
+  self.mongo_client = MongoClient(mongo_uri)
+/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/pymongo/synchronous/mongo_client.py:1776: UserWarning: You appear to be connected to a CosmosDB cluster. For more information regarding feature compatibility and support please visit https://www.mongodb.com/supportability/cosmosdb
+  self._resolve_srv()
+Loading documents from MongoDB...
+Embedding 20 documents...
+Vector index built.
+Vector DB size: 20
+
+Loading Multimodal Data Agent
+-------------------------------
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights: 100%|█████████████████████████████████████████████████████████████| 398/398 [00:00<00:00, 57832.43it/s]
+
+
+--------------------------------
+
+ Agent Chat Ready.
+
+Here are some examples of questions you can ask:
+  - Which demographic group has the most expensive homes?
+  - Was a permit approved for a restaurant in any of the neighborhoods?
+  - Find me a house like mine
+
+ Type 'exit' to quit.
+
+You: Which demographic group has the most expensive homes?
+[Router] Selected agent: structured
+Agent: An error occurred while processing your request with the structured agent: (psycopg.OperationalError) consuming input failed: server closed the connection unexpectedly
+	This probably means the server terminated abnormally
+	before or while processing the request.
+server closed the connection unexpectedly
+	This probably means the server terminated abnormally
+	before or while processing the request.
+[SQL: SELECT neighborhood_houses.id, neighborhood_houses.house_number, neighborhood_houses.neighborhood, neighborhood_houses.household_income, neighborhood_houses.house_size_sqf, neighborhood_houses.house_market_value, neighborhood_houses.family_size, neighborhood_houses.identified_race, neighborhood_houses.swimming_pool, neighborhood_houses.ownership 
+FROM neighborhood_houses 
+ LIMIT %(param_1)s::INTEGER]
+[parameters: {'param_1': 3}]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+
+You: Which demographic group has the most expensive homes?
+[Router] Selected agent: structured
+
+================================================================================
+Using Strucutred Data stored in PostgresQL database to answer question
+Performing a Fairness audit before providing answer
+================================================================================
+
+----------------------------------------------------------------------
+TABLE: neighborhood_houses
+DEMOGRAPHIC COLUMN: household_income
+----------------------------------------------------------------------
+
+Analyzing column: id
+Type: Numeric (distribution fairness)
+
+Mean by group:
+household_income
+30028      669.0
+30036     4613.0
+30037     2925.0
+30055     1941.0
+30074      405.0
+           ...  
+249894    2194.0
+249949     942.0
+249973    4444.0
+249977     202.0
+249993    1805.0
+Name: id, Length: 5467, dtype: float64
+Mean ratio (min/max): 0.000
+Large disparity detected
+
+Analyzing column: house_number
+Type: Numeric (distribution fairness)
+
+Mean by group:
+household_income
+30028      669.0
+30036     4613.0
+30037     2925.0
+30055     1941.0
+30074      405.0
+           ...  
+249894    2194.0
+249949     942.0
+249973    4444.0
+249977     202.0
+249993    1805.0
+Name: house_number, Length: 5467, dtype: float64
+Mean ratio (min/max): 0.000
+Large disparity detected
+
+Analyzing column: neighborhood
+Type: Categorical (distribution comparison)
+
+Percentage distribution by group:
+neighborhood      Ashford  Huntington  Kingsley  Maplewood  Rosedale
+household_income                                                    
+30028                 0.0         0.0       0.0      100.0       0.0
+30036               100.0         0.0       0.0        0.0       0.0
+30037                 0.0         0.0       0.0        0.0     100.0
+30055                 0.0         0.0       0.0      100.0       0.0
+30074                 0.0         0.0       0.0        0.0     100.0
+...                   ...         ...       ...        ...       ...
+249894              100.0         0.0       0.0        0.0       0.0
+249949              100.0         0.0       0.0        0.0       0.0
+249973                0.0         0.0       0.0        0.0     100.0
+249977                0.0         0.0       0.0      100.0       0.0
+249993                0.0         0.0       0.0        0.0     100.0
+
+[5467 rows x 5 columns]
+
+Analyzing column: house_size_sqf
+Type: Numeric (distribution fairness)
+
+Mean by group:
+household_income
+30028     2269.0
+30036     4692.0
+30037     2676.0
+30055     4763.0
+30074     3370.0
+           ...  
+249894    1690.0
+249949    3978.0
+249973    1888.0
+249977    1606.0
+249993    2645.0
+Name: house_size_sqf, Length: 5467, dtype: float64
+Mean ratio (min/max): 0.160
+Large disparity detected
+
+Analyzing column: house_market_value
+Type: Numeric (distribution fairness)
+
+Mean by group:
+household_income
+30028      193005.0
+30036     1359246.0
+30037     1304835.0
+30055     1105844.0
+30074      526616.0
+            ...    
+249894     317975.0
+249949    1459982.0
+249973    1021523.0
+249977    1243417.0
+249993     413807.0
+Name: house_market_value, Length: 5467, dtype: float64
+Mean ratio (min/max): 0.067
+Large disparity detected
+
+Analyzing column: family_size
+Type: Numeric (distribution fairness)
+
+Mean by group:
+household_income
+30028     1.0
+30036     5.0
+30037     1.0
+30055     3.0
+30074     5.0
+         ... 
+249894    3.0
+249949    6.0
+249973    1.0
+249977    5.0
+249993    2.0
+Name: family_size, Length: 5467, dtype: float64
+Mean ratio (min/max): 0.143
+Large disparity detected
+
+Analyzing column: identified_race
+Type: Categorical (distribution comparison)
+
+Percentage distribution by group:
+identified_race   Asian  Black  Hispanic  Other  White
+household_income                                      
+30028               0.0    0.0     100.0    0.0    0.0
+30036               0.0    0.0     100.0    0.0    0.0
+30037               0.0    0.0     100.0    0.0    0.0
+30055             100.0    0.0       0.0    0.0    0.0
+30074               0.0    0.0     100.0    0.0    0.0
+...                 ...    ...       ...    ...    ...
+249894              0.0  100.0       0.0    0.0    0.0
+249949              0.0  100.0       0.0    0.0    0.0
+249973              0.0    0.0       0.0  100.0    0.0
+249977              0.0    0.0       0.0    0.0  100.0
+249993            100.0    0.0       0.0    0.0    0.0
+
+[5467 rows x 5 columns]
+
+Analyzing column: swimming_pool
+Type: Binary (classification fairness)
+
+Selection Rate by Group:
+                  selection_rate
+household_income                
+30028                        0.0
+30036                        0.0
+30037                        0.0
+30055                        0.0
+30074                        0.0
+...                          ...
+249894                       0.0
+249949                       0.0
+249973                       0.0
+249977                       0.0
+249993                       0.0
+
+[5467 rows x 1 columns]
+Demographic Parity Difference: 1.0000
+Potential bias detected
+
+Analyzing column: ownership
+Type: Binary (classification fairness)
+
+Selection Rate by Group:
+                  selection_rate
+household_income                
+30028                        0.0
+30036                        0.0
+30037                        0.0
+30055                        0.0
+30074                        0.0
+...                          ...
+249894                       0.0
+249949                       0.0
+249973                       0.0
+249977                       0.0
+249993                       0.0
+
+[5467 rows x 1 columns]
+Demographic Parity Difference: 0.0000
+Within fairness threshold
+
+----------------------------------------------------------------------
+TABLE: neighborhood_houses
+DEMOGRAPHIC COLUMN: identified_race
+----------------------------------------------------------------------
+
+Analyzing column: id
+Type: Numeric (distribution fairness)
+
+Mean by group:
+identified_race
+Asian       2857.479964
+Black       2845.080340
+Hispanic    2753.215722
+Other       2731.419680
+White       2667.145911
+Name: id, dtype: float64
+Mean ratio (min/max): 0.933
+No major disparity
+
+Analyzing column: house_number
+Type: Numeric (distribution fairness)
+
+Mean by group:
+identified_race
+Asian       2857.479964
+Black       2845.080340
+Hispanic    2753.215722
+Other       2731.419680
+White       2667.145911
+Name: house_number, dtype: float64
+Mean ratio (min/max): 0.933
+No major disparity
+
+Analyzing column: neighborhood
+Type: Categorical (distribution comparison)
+
+Percentage distribution by group:
+neighborhood     Ashford  Huntington  Kingsley  Maplewood  Rosedale
+identified_race                                                    
+Asian              14.78       20.93     19.95      24.49     19.86
+Black              14.74       20.23     19.09      24.20     21.74
+Hispanic           14.81       19.10     20.02      27.42     18.65
+Other              14.89       21.03     19.34      24.98     19.76
+White              14.31       17.75     20.91      26.49     20.54
+
+Analyzing column: household_income
+Type: Numeric (distribution fairness)
+
+Mean by group:
+identified_race
+Asian       140459.620659
+Black       139900.642722
+Hispanic    141870.096892
+Other       134645.841884
+White       139378.630112
+Name: household_income, dtype: float64
+Mean ratio (min/max): 0.949
+No major disparity
+
+Analyzing column: house_size_sqf
+Type: Numeric (distribution fairness)
+
+Mean by group:
+identified_race
+Asian       2879.314337
+Black       2854.746692
+Hispanic    2876.762340
+Other       2861.952061
+White       2895.314126
+Name: house_size_sqf, dtype: float64
+Mean ratio (min/max): 0.986
+No major disparity
+
+Analyzing column: house_market_value
+Type: Numeric (distribution fairness)
+
+Mean by group:
+identified_race
+Asian       813941.445236
+Black       800168.930057
+Hispanic    782294.106947
+Other       808920.538267
+White       798496.228625
+Name: house_market_value, dtype: float64
+Mean ratio (min/max): 0.961
+No major disparity
+
+Analyzing column: family_size
+Type: Numeric (distribution fairness)
+
+Mean by group:
+identified_race
+Asian       4.027605
+Black       4.155955
+Hispanic    4.106033
+Other       3.989066
+White       4.094796
+Name: family_size, dtype: float64
+Mean ratio (min/max): 0.960
+No major disparity
+
+Analyzing column: swimming_pool
+Type: Binary (classification fairness)
+
+Selection Rate by Group:
+                 selection_rate
+identified_race                
+Asian                  0.196794
+Black                  0.213611
+Hispanic               0.209324
+Other                  0.184188
+White                  0.211896
+Demographic Parity Difference: 0.0294
+Within fairness threshold
+
+Analyzing column: ownership
+Type: Binary (classification fairness)
+
+Selection Rate by Group:
+                 selection_rate
+identified_race                
+Asian                       0.0
+Black                       0.0
+Hispanic                    0.0
+Other                       0.0
+White                       0.0
+Demographic Parity Difference: 0.0000
+Within fairness threshold
+
+----------------------------------------------------------------------
+TABLE: neighborhood_hospitals
+DEMOGRAPHIC COLUMN: average_daily_patients
+----------------------------------------------------------------------
+
+Analyzing column: id
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_daily_patients
+42     2.0
+50     4.0
+66     6.0
+101    3.0
+104    1.0
+112    5.0
+Name: id, dtype: float64
+Mean ratio (min/max): 0.167
+Large disparity detected
+
+Analyzing column: hospital_name
+Type: Categorical (distribution comparison)
+
+Percentage distribution by group:
+hospital_name           Ashford Regional Hospital  ...  St. Mary Medical Center
+average_daily_patients                             ...                         
+42                                            0.0  ...                      0.0
+50                                            0.0  ...                      0.0
+66                                            0.0  ...                      0.0
+101                                         100.0  ...                      0.0
+104                                           0.0  ...                    100.0
+112                                           0.0  ...                      0.0
+
+[6 rows x 6 columns]
+
+Analyzing column: neighborhood
+Type: Categorical (distribution comparison)
+
+Percentage distribution by group:
+neighborhood            Ashford  Kingsley  Maplewood  Rosedale
+average_daily_patients                                        
+42                          0.0       0.0        0.0     100.0
+50                          0.0     100.0        0.0       0.0
+66                          0.0       0.0      100.0       0.0
+101                       100.0       0.0        0.0       0.0
+104                         0.0     100.0        0.0       0.0
+112                         0.0     100.0        0.0       0.0
+
+Analyzing column: hospital_type
+Type: Categorical (distribution comparison)
+
+Percentage distribution by group:
+hospital_type           Community  Specialty  Trauma
+average_daily_patients                              
+42                          100.0        0.0     0.0
+50                          100.0        0.0     0.0
+66                            0.0      100.0     0.0
+101                           0.0        0.0   100.0
+104                           0.0        0.0   100.0
+112                         100.0        0.0     0.0
+
+Analyzing column: number_of_beds
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_daily_patients
+42      62.0
+50      82.0
+66      76.0
+101     93.0
+104    108.0
+112    107.0
+Name: number_of_beds, dtype: float64
+Mean ratio (min/max): 0.574
+Large disparity detected
+
+Analyzing column: emergency_capacity
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_daily_patients
+42      9.0
+50     19.0
+66      9.0
+101    15.0
+104    20.0
+112    20.0
+Name: emergency_capacity, dtype: float64
+Mean ratio (min/max): 0.450
+Large disparity detected
+
+Analyzing column: doctors
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_daily_patients
+42     15.0
+50     20.0
+66     19.0
+101    23.0
+104    27.0
+112    26.0
+Name: doctors, dtype: float64
+Mean ratio (min/max): 0.556
+Large disparity detected
+
+Analyzing column: nurses
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_daily_patients
+42     124.0
+50     164.0
+66     152.0
+101    186.0
+104    216.0
+112    214.0
+Name: nurses, dtype: float64
+Mean ratio (min/max): 0.574
+Large disparity detected
+
+Analyzing column: male_patients
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_daily_patients
+42     50.2
+50     47.6
+66     53.0
+101    53.6
+104    46.6
+112    54.2
+Name: male_patients, dtype: float64
+Mean ratio (min/max): 0.860
+No major disparity
+
+Analyzing column: female_patients
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_daily_patients
+42     49.8
+50     52.4
+66     47.0
+101    46.4
+104    53.4
+112    45.8
+Name: female_patients, dtype: float64
+Mean ratio (min/max): 0.858
+No major disparity
+
+Analyzing column: white_patients
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_daily_patients
+42     20.0
+50     26.0
+66     28.0
+101    43.0
+104    54.0
+112    56.0
+Name: white_patients, dtype: float64
+Mean ratio (min/max): 0.357
+Large disparity detected
+
+Analyzing column: black_patients
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_daily_patients
+42      5.0
+50      6.0
+66     13.0
+101    18.0
+104    19.0
+112    11.0
+Name: black_patients, dtype: float64
+Mean ratio (min/max): 0.263
+Large disparity detected
+
+Analyzing column: asian_patients
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_daily_patients
+42      5.0
+50      5.0
+66      5.0
+101    11.0
+104     9.0
+112    11.0
+Name: asian_patients, dtype: float64
+Mean ratio (min/max): 0.455
+Large disparity detected
+
+Analyzing column: hispanic_patients
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_daily_patients
+42     11.0
+50     10.0
+66     20.0
+101    27.0
+104    17.0
+112    28.0
+Name: hispanic_patients, dtype: float64
+Mean ratio (min/max): 0.357
+Large disparity detected
+
+Analyzing column: other_patients
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_daily_patients
+42     1.0
+50     3.0
+66     0.0
+101    2.0
+104    5.0
+112    6.0
+Name: other_patients, dtype: float64
+Mean ratio (min/max): 0.000
+Large disparity detected
+
+Analyzing column: average_wait_time_min
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_daily_patients
+42     24.6
+50     19.2
+66     50.8
+101    21.5
+104    11.0
+112    23.6
+Name: average_wait_time_min, dtype: float64
+Mean ratio (min/max): 0.217
+Large disparity detected
+
+Analyzing column: icu_beds
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_daily_patients
+42      6.0
+50     12.0
+66      9.0
+101     9.0
+104    15.0
+112    14.0
+Name: icu_beds, dtype: float64
+Mean ratio (min/max): 0.400
+Large disparity detected
+
+Analyzing column: annual_admissions
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_daily_patients
+42     15330.0
+50     18250.0
+66     24090.0
+101    36865.0
+104    37960.0
+112    40880.0
+Name: annual_admissions, dtype: float64
+Mean ratio (min/max): 0.375
+Large disparity detected
+
+----------------------------------------------------------------------
+TABLE: neighborhood_hospitals
+DEMOGRAPHIC COLUMN: average_wait_time_min
+----------------------------------------------------------------------
+
+Analyzing column: id
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_wait_time_min
+11.0    1.0
+19.2    4.0
+21.5    3.0
+23.6    5.0
+24.6    2.0
+50.8    6.0
+Name: id, dtype: float64
+Mean ratio (min/max): 0.167
+Large disparity detected
+
+Analyzing column: hospital_name
+Type: Categorical (distribution comparison)
+
+Percentage distribution by group:
+hospital_name          Ashford Regional Hospital  ...  St. Mary Medical Center
+average_wait_time_min                             ...                         
+11.0                                         0.0  ...                    100.0
+19.2                                         0.0  ...                      0.0
+21.5                                       100.0  ...                      0.0
+23.6                                         0.0  ...                      0.0
+24.6                                         0.0  ...                      0.0
+50.8                                         0.0  ...                      0.0
+
+[6 rows x 6 columns]
+
+Analyzing column: neighborhood
+Type: Categorical (distribution comparison)
+
+Percentage distribution by group:
+neighborhood           Ashford  Kingsley  Maplewood  Rosedale
+average_wait_time_min                                        
+11.0                       0.0     100.0        0.0       0.0
+19.2                       0.0     100.0        0.0       0.0
+21.5                     100.0       0.0        0.0       0.0
+23.6                       0.0     100.0        0.0       0.0
+24.6                       0.0       0.0        0.0     100.0
+50.8                       0.0       0.0      100.0       0.0
+
+Analyzing column: hospital_type
+Type: Categorical (distribution comparison)
+
+Percentage distribution by group:
+hospital_type          Community  Specialty  Trauma
+average_wait_time_min                              
+11.0                         0.0        0.0   100.0
+19.2                       100.0        0.0     0.0
+21.5                         0.0        0.0   100.0
+23.6                       100.0        0.0     0.0
+24.6                       100.0        0.0     0.0
+50.8                         0.0      100.0     0.0
+
+Analyzing column: number_of_beds
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_wait_time_min
+11.0    108.0
+19.2     82.0
+21.5     93.0
+23.6    107.0
+24.6     62.0
+50.8     76.0
+Name: number_of_beds, dtype: float64
+Mean ratio (min/max): 0.574
+Large disparity detected
+
+Analyzing column: average_daily_patients
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_wait_time_min
+11.0    104.0
+19.2     50.0
+21.5    101.0
+23.6    112.0
+24.6     42.0
+50.8     66.0
+Name: average_daily_patients, dtype: float64
+Mean ratio (min/max): 0.375
+Large disparity detected
+
+Analyzing column: emergency_capacity
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_wait_time_min
+11.0    20.0
+19.2    19.0
+21.5    15.0
+23.6    20.0
+24.6     9.0
+50.8     9.0
+Name: emergency_capacity, dtype: float64
+Mean ratio (min/max): 0.450
+Large disparity detected
+
+Analyzing column: doctors
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_wait_time_min
+11.0    27.0
+19.2    20.0
+21.5    23.0
+23.6    26.0
+24.6    15.0
+50.8    19.0
+Name: doctors, dtype: float64
+Mean ratio (min/max): 0.556
+Large disparity detected
+
+Analyzing column: nurses
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_wait_time_min
+11.0    216.0
+19.2    164.0
+21.5    186.0
+23.6    214.0
+24.6    124.0
+50.8    152.0
+Name: nurses, dtype: float64
+Mean ratio (min/max): 0.574
+Large disparity detected
+
+Analyzing column: male_patients
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_wait_time_min
+11.0    46.6
+19.2    47.6
+21.5    53.6
+23.6    54.2
+24.6    50.2
+50.8    53.0
+Name: male_patients, dtype: float64
+Mean ratio (min/max): 0.860
+No major disparity
+
+Analyzing column: female_patients
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_wait_time_min
+11.0    53.4
+19.2    52.4
+21.5    46.4
+23.6    45.8
+24.6    49.8
+50.8    47.0
+Name: female_patients, dtype: float64
+Mean ratio (min/max): 0.858
+No major disparity
+
+Analyzing column: white_patients
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_wait_time_min
+11.0    54.0
+19.2    26.0
+21.5    43.0
+23.6    56.0
+24.6    20.0
+50.8    28.0
+Name: white_patients, dtype: float64
+Mean ratio (min/max): 0.357
+Large disparity detected
+
+Analyzing column: black_patients
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_wait_time_min
+11.0    19.0
+19.2     6.0
+21.5    18.0
+23.6    11.0
+24.6     5.0
+50.8    13.0
+Name: black_patients, dtype: float64
+Mean ratio (min/max): 0.263
+Large disparity detected
+
+Analyzing column: asian_patients
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_wait_time_min
+11.0     9.0
+19.2     5.0
+21.5    11.0
+23.6    11.0
+24.6     5.0
+50.8     5.0
+Name: asian_patients, dtype: float64
+Mean ratio (min/max): 0.455
+Large disparity detected
+
+Analyzing column: hispanic_patients
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_wait_time_min
+11.0    17.0
+19.2    10.0
+21.5    27.0
+23.6    28.0
+24.6    11.0
+50.8    20.0
+Name: hispanic_patients, dtype: float64
+Mean ratio (min/max): 0.357
+Large disparity detected
+
+Analyzing column: other_patients
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_wait_time_min
+11.0    5.0
+19.2    3.0
+21.5    2.0
+23.6    6.0
+24.6    1.0
+50.8    0.0
+Name: other_patients, dtype: float64
+Mean ratio (min/max): 0.000
+Large disparity detected
+
+Analyzing column: icu_beds
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_wait_time_min
+11.0    15.0
+19.2    12.0
+21.5     9.0
+23.6    14.0
+24.6     6.0
+50.8     9.0
+Name: icu_beds, dtype: float64
+Mean ratio (min/max): 0.400
+Large disparity detected
+
+Analyzing column: annual_admissions
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_wait_time_min
+11.0    37960.0
+19.2    18250.0
+21.5    36865.0
+23.6    40880.0
+24.6    15330.0
+50.8    24090.0
+Name: annual_admissions, dtype: float64
+Mean ratio (min/max): 0.375
+Large disparity detected
+
+----------------------------------------------------------------------
+TABLE: education_survey
+DEMOGRAPHIC COLUMN: age
+----------------------------------------------------------------------
+
+Analyzing column: id
+Type: Numeric (distribution fairness)
+
+Mean by group:
+age
+18    1147.200000
+19    1202.787879
+20    1122.209302
+21    1204.119048
+22    1203.763158
+         ...     
+76    1483.180000
+77    1292.642857
+78    1254.950820
+79    1469.083333
+80    1495.200000
+Name: id, Length: 63, dtype: float64
+Mean ratio (min/max): 0.627
+Large disparity detected
+
+Analyzing column: neighborhood
+Type: Categorical (distribution comparison)
+
+Percentage distribution by group:
+neighborhood  Ashford  Huntington  Kingsley  Maplewood  Rosedale
+age                                                             
+18              24.44       13.33     11.11      24.44     26.67
+19              12.12       15.15     12.12      21.21     39.39
+20              27.91       13.95     16.28      13.95     27.91
+21               7.14       16.67     33.33      21.43     21.43
+22              26.32       18.42     10.53      23.68     21.05
+..                ...         ...       ...        ...       ...
+76              24.00       22.00     20.00      24.00     10.00
+77              11.90       14.29     16.67      33.33     23.81
+78              19.67       16.39     11.48      24.59     27.87
+79               8.33       22.22     19.44      27.78     22.22
+80              32.50       17.50     22.50      12.50     15.00
+
+[63 rows x 5 columns]
+
+Analyzing column: education_level
+Type: Categorical (distribution comparison)
+
+Percentage distribution by group:
+education_level  Bachelors   None  Postgraduate  Technical
+age                                                       
+18                   33.33  11.11         20.00      35.56
+19                   36.36  12.12         21.21      30.30
+20                   46.51   9.30         16.28      27.91
+21                   23.81  11.90         26.19      38.10
+22                   39.47   7.89         18.42      34.21
+..                     ...    ...           ...        ...
+76                   50.00   4.00         18.00      28.00
+77                   38.10   0.00         21.43      40.48
+78                   39.34  14.75         18.03      27.87
+79                   33.33  11.11         19.44      36.11
+80                   52.50   5.00         22.50      20.00
+
+[63 rows x 4 columns]
+
+Analyzing column: employment_status
+Type: Categorical (distribution comparison)
+
+Percentage distribution by group:
+employment_status  Full-time  Part-time  Retired  Unemployed
+age                                                         
+18                     40.00      26.67    20.00       13.33
+19                     45.45      27.27     9.09       18.18
+20                     46.51      25.58    13.95       13.95
+21                     47.62      16.67    23.81       11.90
+22                     47.37      18.42    10.53       23.68
+..                       ...        ...      ...         ...
+76                     50.00      22.00    14.00       14.00
+77                     33.33      26.19    21.43       19.05
+78                     40.98      31.15    16.39       11.48
+79                     47.22      16.67     8.33       27.78
+80                     55.00      15.00    10.00       20.00
+
+[63 rows x 4 columns]
+
+Analyzing column: years_of_experience
+Type: Numeric (distribution fairness)
+
+Mean by group:
+age
+18     0.000000
+19     0.393939
+20     0.511628
+21     0.928571
+22     1.157895
+        ...    
+76    19.000000
+77    18.500000
+78    21.754098
+79    19.361111
+80    19.625000
+Name: years_of_experience, Length: 63, dtype: float64
+Mean ratio (min/max): 0.000
+Large disparity detected
+
+Analyzing column: annual_income
+Type: Numeric (distribution fairness)
+
+Mean by group:
+age
+18    44632.844444
+19    43951.909091
+20    47054.930233
+21    44325.095238
+22    46318.921053
+          ...     
+76    48858.520000
+77    42545.738095
+78    44859.114754
+79    42113.694444
+80    49483.400000
+Name: annual_income, Length: 63, dtype: float64
+Mean ratio (min/max): 0.688
+Large disparity detected
+
+Analyzing column: gender
+Type: Categorical (distribution comparison)
+
+Percentage distribution by group:
+gender  Female   Male  Other
+age                         
+18       46.67  48.89   4.44
+19       54.55  45.45   0.00
+20       51.16  44.19   4.65
+21       45.24  52.38   2.38
+22       50.00  47.37   2.63
+..         ...    ...    ...
+76       52.00  42.00   6.00
+77       52.38  42.86   4.76
+78       42.62  54.10   3.28
+79       36.11  61.11   2.78
+80       45.00  45.00  10.00
+
+[63 rows x 3 columns]
+
+Analyzing column: household_size
+Type: Numeric (distribution fairness)
+
+Mean by group:
+age
+18    3.800000
+19    4.060606
+20    4.558140
+21    3.666667
+22    4.289474
+        ...   
+76    4.020000
+77    3.547619
+78    4.147541
+79    3.361111
+80    3.875000
+Name: household_size, Length: 63, dtype: float64
+Mean ratio (min/max): 0.727
+Large disparity detected
+
+----------------------------------------------------------------------
+TABLE: education_survey
+DEMOGRAPHIC COLUMN: annual_income
+----------------------------------------------------------------------
+
+Analyzing column: id
+Type: Numeric (distribution fairness)
+
+Mean by group:
+annual_income
+1149      2175.0
+1749       197.0
+1974       508.0
+2284      1921.0
+2529      1176.0
+           ...  
+104800    1242.0
+104821     821.0
+104895     310.0
+104900     677.0
+104963    1709.0
+Name: id, Length: 2519, dtype: float64
+Mean ratio (min/max): 0.000
+Large disparity detected
+
+Analyzing column: neighborhood
+Type: Categorical (distribution comparison)
+
+Percentage distribution by group:
+neighborhood   Ashford  Huntington  Kingsley  Maplewood  Rosedale
+annual_income                                                    
+1149               0.0         0.0       0.0        0.0     100.0
+1749             100.0         0.0       0.0        0.0       0.0
+1974               0.0         0.0     100.0        0.0       0.0
+2284               0.0         0.0       0.0      100.0       0.0
+2529               0.0         0.0       0.0      100.0       0.0
+...                ...         ...       ...        ...       ...
+104800             0.0       100.0       0.0        0.0       0.0
+104821             0.0         0.0       0.0      100.0       0.0
+104895             0.0       100.0       0.0        0.0       0.0
+104900             0.0       100.0       0.0        0.0       0.0
+104963             0.0         0.0       0.0        0.0     100.0
+
+[2519 rows x 5 columns]
+
+Analyzing column: education_level
+Type: Categorical (distribution comparison)
+
+Percentage distribution by group:
+education_level  Bachelors   None  Postgraduate  Technical
+annual_income                                             
+1149                   0.0  100.0           0.0        0.0
+1749                   0.0  100.0           0.0        0.0
+1974                   0.0  100.0           0.0        0.0
+2284                   0.0  100.0           0.0        0.0
+2529                   0.0  100.0           0.0        0.0
+...                    ...    ...           ...        ...
+104800                 0.0    0.0         100.0        0.0
+104821                 0.0    0.0         100.0        0.0
+104895                 0.0    0.0         100.0        0.0
+104900                 0.0    0.0         100.0        0.0
+104963                 0.0    0.0         100.0        0.0
+
+[2519 rows x 4 columns]
+
+Analyzing column: employment_status
+Type: Categorical (distribution comparison)
+
+Percentage distribution by group:
+employment_status  Full-time  Part-time  Retired  Unemployed
+annual_income                                               
+1149                     0.0        0.0      0.0       100.0
+1749                     0.0        0.0      0.0       100.0
+1974                     0.0        0.0      0.0       100.0
+2284                     0.0        0.0      0.0       100.0
+2529                     0.0        0.0      0.0       100.0
+...                      ...        ...      ...         ...
+104800                 100.0        0.0      0.0         0.0
+104821                 100.0        0.0      0.0         0.0
+104895                 100.0        0.0      0.0         0.0
+104900                 100.0        0.0      0.0         0.0
+104963                 100.0        0.0      0.0         0.0
+
+[2519 rows x 4 columns]
+
+Analyzing column: age
+Type: Numeric (distribution fairness)
+
+Mean by group:
+annual_income
+1149      33.0
+1749      53.0
+1974      66.0
+2284      68.0
+2529      50.0
+          ... 
+104800    71.0
+104821    22.0
+104895    75.0
+104900    42.0
+104963    28.0
+Name: age, Length: 2519, dtype: float64
+Mean ratio (min/max): 0.225
+Large disparity detected
+
+Analyzing column: years_of_experience
+Type: Numeric (distribution fairness)
+
+Mean by group:
+annual_income
+1149       0.0
+1749       0.0
+1974       0.0
+2284       0.0
+2529       0.0
+          ... 
+104800    23.0
+104821     4.0
+104895     8.0
+104900    11.0
+104963     8.0
+Name: years_of_experience, Length: 2519, dtype: float64
+Mean ratio (min/max): 0.000
+Large disparity detected
+
+Analyzing column: gender
+Type: Categorical (distribution comparison)
+
+Percentage distribution by group:
+gender         Female   Male  Other
+annual_income                      
+1149            100.0    0.0    0.0
+1749              0.0    0.0  100.0
+1974            100.0    0.0    0.0
+2284              0.0  100.0    0.0
+2529            100.0    0.0    0.0
+...               ...    ...    ...
+104800          100.0    0.0    0.0
+104821            0.0  100.0    0.0
+104895          100.0    0.0    0.0
+104900            0.0  100.0    0.0
+104963            0.0  100.0    0.0
+
+[2519 rows x 3 columns]
+
+Analyzing column: household_size
+Type: Numeric (distribution fairness)
+
+Mean by group:
+annual_income
+1149      2.0
+1749      7.0
+1974      4.0
+2284      7.0
+2529      6.0
+         ... 
+104800    1.0
+104821    4.0
+104895    7.0
+104900    7.0
+104963    4.0
+Name: household_size, Length: 2519, dtype: float64
+Mean ratio (min/max): 0.143
+Large disparity detected
+
+----------------------------------------------------------------------
+TABLE: education_survey
+DEMOGRAPHIC COLUMN: gender
+----------------------------------------------------------------------
+
+Analyzing column: id
+Type: Numeric (distribution fairness)
+
+Mean by group:
+gender
+Female    1297.723618
+Male      1291.384373
+Other     1208.605042
+Name: id, dtype: float64
+Mean ratio (min/max): 0.931
+No major disparity
+
+Analyzing column: neighborhood
+Type: Categorical (distribution comparison)
+
+Percentage distribution by group:
+neighborhood  Ashford  Huntington  Kingsley  Maplewood  Rosedale
+gender                                                          
+Female          19.10       20.69     19.77      19.60     20.85
+Male            18.23       19.89     20.76      20.92     20.21
+Other           15.13       29.41     23.53      21.85     10.08
+
+Analyzing column: education_level
+Type: Categorical (distribution comparison)
+
+Percentage distribution by group:
+education_level  Bachelors   None  Postgraduate  Technical
+gender                                                    
+Female               38.61  10.64         21.02      29.73
+Male                 40.96  10.34         18.23      30.47
+Other                42.86  10.92         19.33      26.89
+
+Analyzing column: employment_status
+Type: Categorical (distribution comparison)
+
+Percentage distribution by group:
+employment_status  Full-time  Part-time  Retired  Unemployed
+gender                                                      
+Female                 50.92      19.77    14.49       14.82
+Male                   51.30      18.63    14.36       15.71
+Other                  49.58      17.65    16.81       15.97
+
+Analyzing column: age
+Type: Numeric (distribution fairness)
+
+Mean by group:
+gender
+Female    49.260469
+Male      48.823204
+Other     51.974790
+Name: age, dtype: float64
+Mean ratio (min/max): 0.939
+No major disparity
+
+Analyzing column: years_of_experience
+Type: Numeric (distribution fairness)
+
+Mean by group:
+gender
+Female    11.389447
+Male      10.603788
+Other     11.420168
+Name: years_of_experience, dtype: float64
+Mean ratio (min/max): 0.929
+No major disparity
+
+Analyzing column: annual_income
+Type: Numeric (distribution fairness)
+
+Mean by group:
+gender
+Female    46384.345059
+Male      45943.429361
+Other     46221.537815
+Name: annual_income, dtype: float64
+Mean ratio (min/max): 0.990
+No major disparity
+
+Analyzing column: household_size
+Type: Numeric (distribution fairness)
+
+Mean by group:
+gender
+Female    3.995812
+Male      4.038674
+Other     3.983193
+Name: household_size, dtype: float64
+Mean ratio (min/max): 0.986
+No major disparity
+
+----------------------------------------------------------------------
+TABLE: neighborhood_schools
+DEMOGRAPHIC COLUMN: average_age
+----------------------------------------------------------------------
+
+Analyzing column: id
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_age
+6.3      1.0
+10.1     6.0
+10.9     2.0
+11.8    10.0
+12.6     5.0
+12.9     9.0
+14.1     4.0
+15.0     3.0
+15.3     8.0
+16.9     7.0
+Name: id, dtype: float64
+Mean ratio (min/max): 0.100
+Large disparity detected
+
+Analyzing column: school_name
+Type: Categorical (distribution comparison)
+
+Percentage distribution by group:
+school_name  Acadia  Denali  Everglades  Glacier  Grand Canyon  Olympic  Rocky Mountain  Yellowstone  Yosemite   Zion
+average_age                                                                                                          
+6.3             0.0     0.0         0.0      0.0           0.0      0.0             0.0        100.0       0.0    0.0
+10.1            0.0     0.0         0.0    100.0           0.0      0.0             0.0          0.0       0.0    0.0
+10.9            0.0     0.0         0.0      0.0           0.0      0.0             0.0          0.0     100.0    0.0
+11.8            0.0   100.0         0.0      0.0           0.0      0.0             0.0          0.0       0.0    0.0
+12.6            0.0     0.0       100.0      0.0           0.0      0.0             0.0          0.0       0.0    0.0
+12.9          100.0     0.0         0.0      0.0           0.0      0.0             0.0          0.0       0.0    0.0
+14.1            0.0     0.0         0.0      0.0           0.0      0.0             0.0          0.0       0.0  100.0
+15.0            0.0     0.0         0.0      0.0         100.0      0.0             0.0          0.0       0.0    0.0
+15.3            0.0     0.0         0.0      0.0           0.0    100.0             0.0          0.0       0.0    0.0
+16.9            0.0     0.0         0.0      0.0           0.0      0.0           100.0          0.0       0.0    0.0
+
+Analyzing column: neighborhood
+Type: Categorical (distribution comparison)
+
+Percentage distribution by group:
+neighborhood  Ashford  Huntington  Kingsley  Maplewood  Rosedale
+average_age                                                     
+6.3               0.0         0.0     100.0        0.0       0.0
+10.1              0.0         0.0       0.0      100.0       0.0
+10.9              0.0         0.0       0.0        0.0     100.0
+11.8              0.0       100.0       0.0        0.0       0.0
+12.6              0.0         0.0       0.0        0.0     100.0
+12.9              0.0         0.0     100.0        0.0       0.0
+14.1              0.0         0.0     100.0        0.0       0.0
+15.0            100.0         0.0       0.0        0.0       0.0
+15.3            100.0         0.0       0.0        0.0       0.0
+16.9              0.0         0.0       0.0      100.0       0.0
+
+Analyzing column: school_level
+Type: Categorical (distribution comparison)
+
+Percentage distribution by group:
+school_level  Elementary   High  Middle
+average_age                            
+6.3                100.0    0.0     0.0
+10.1               100.0    0.0     0.0
+10.9               100.0    0.0     0.0
+11.8                 0.0    0.0   100.0
+12.6                 0.0    0.0   100.0
+12.9                 0.0    0.0   100.0
+14.1                 0.0  100.0     0.0
+15.0                 0.0  100.0     0.0
+15.3                 0.0  100.0     0.0
+16.9                 0.0  100.0     0.0
+
+Analyzing column: number_of_students
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_age
+6.3      94.0
+10.1     96.0
+10.9    134.0
+11.8    144.0
+12.6    117.0
+12.9     89.0
+14.1    141.0
+15.0    222.0
+15.3    153.0
+16.9     88.0
+Name: number_of_students, dtype: float64
+Mean ratio (min/max): 0.396
+Large disparity detected
+
+Analyzing column: male_students
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_age
+6.3      49.0
+10.1     50.0
+10.9     68.0
+11.8     67.0
+12.6     57.0
+12.9     45.0
+14.1     75.0
+15.0    110.0
+15.3     70.0
+16.9     42.0
+Name: male_students, dtype: float64
+Mean ratio (min/max): 0.382
+Large disparity detected
+
+Analyzing column: female_students
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_age
+6.3      45.0
+10.1     46.0
+10.9     66.0
+11.8     77.0
+12.6     60.0
+12.9     44.0
+14.1     66.0
+15.0    112.0
+15.3     83.0
+16.9     46.0
+Name: female_students, dtype: float64
+Mean ratio (min/max): 0.393
+Large disparity detected
+
+Analyzing column: white_students
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_age
+6.3      45.0
+10.1     41.0
+10.9     67.0
+11.8     71.0
+12.6     60.0
+12.9     40.0
+14.1     71.0
+15.0    122.0
+15.3     82.0
+16.9     40.0
+Name: white_students, dtype: float64
+Mean ratio (min/max): 0.328
+Large disparity detected
+
+Analyzing column: black_students
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_age
+6.3     13.0
+10.1    19.0
+10.9    20.0
+11.8    20.0
+12.6    17.0
+12.9    20.0
+14.1    18.0
+15.0    37.0
+15.3    21.0
+16.9    15.0
+Name: black_students, dtype: float64
+Mean ratio (min/max): 0.351
+Large disparity detected
+
+Analyzing column: asian_students
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_age
+6.3      7.0
+10.1     8.0
+10.9    13.0
+11.8    11.0
+12.6    17.0
+12.9     9.0
+14.1    17.0
+15.0    19.0
+15.3     8.0
+16.9     8.0
+Name: asian_students, dtype: float64
+Mean ratio (min/max): 0.368
+Large disparity detected
+
+Analyzing column: hispanic_students
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_age
+6.3     22.0
+10.1    27.0
+10.9    31.0
+11.8    35.0
+12.6    16.0
+12.9    15.0
+14.1    29.0
+15.0    36.0
+15.3    37.0
+16.9    23.0
+Name: hispanic_students, dtype: float64
+Mean ratio (min/max): 0.405
+Large disparity detected
+
+Analyzing column: other_students
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_age
+6.3     7.0
+10.1    1.0
+10.9    3.0
+11.8    7.0
+12.6    7.0
+12.9    5.0
+14.1    6.0
+15.0    8.0
+15.3    5.0
+16.9    2.0
+Name: other_students, dtype: float64
+Mean ratio (min/max): 0.125
+Large disparity detected
+
+Analyzing column: number_of_teachers
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_age
+6.3      4.0
+10.1     4.0
+10.9     6.0
+11.8     7.0
+12.6     5.0
+12.9     4.0
+14.1     7.0
+15.0    11.0
+15.3     7.0
+16.9     4.0
+Name: number_of_teachers, dtype: float64
+Mean ratio (min/max): 0.364
+Large disparity detected
+
+Analyzing column: student_teacher_ratio
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_age
+6.3     23.50
+10.1    24.00
+10.9    22.33
+11.8    20.57
+12.6    23.40
+12.9    22.25
+14.1    20.14
+15.0    20.18
+15.3    21.86
+16.9    22.00
+Name: student_teacher_ratio, dtype: float64
+Mean ratio (min/max): 0.839
+No major disparity
+Agent: The demographic group with the most expensive homes is **Asian**, with an average house market value of about **$813,941**.
+
+You: Was a permit approved for a restaurant in any of the neighborhoods?
+[Router] Selected agent: unstructured
+
+================================================================================
+Using Unstrucutred Data stored in MongoDB database to answer question
+Seraching for PII data in source documents
+================================================================================
+Collecting en-core-web-lg==3.8.0
+  Downloading en_core_web_lg-3.8.0-py3-none-any.whl (400.7 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 400.7/400.7 MB 11.0 MB/s  0:00:36
+Installing collected packages: en-core-web-lg
+Successfully installed en-core-web-lg-3.8.0
+
+[notice] A new release of pip is available: 26.1 -> 26.1.2
+[notice] To update, run: pip install --upgrade pip
+✔ Download and installation successful
+You can now load the package via spacy.load('en_core_web_lg')
+
+WARNING: PII detected:
+- EMAIL_ADDRESS: 'lmontrose@mcc-devgroup.com' (confidence=1.00)
+- EMAIL_ADDRESS: 'hwinslow@ashford-gov.org' (confidence=1.00)
+- EMAIL_ADDRESS: 'thanley@hqsp-dev.com' (confidence=1.00)
+- EMAIL_ADDRESS: 'mhalden@hcv-projects.com' (confidence=1.00)
+- EMAIL_ADDRESS: 'emerriweather@larkspur-gov.org' (confidence=1.00)
+- DATE_TIME: 'June 24' (confidence=0.85)
+- PERSON: 'Lydia R. Montrose\n• Company/Developer' (confidence=0.85)
+- LOCATION: 'Willowcrest Bend' (confidence=0.85)
+- LOCATION: 'Ashford' (confidence=0.85)
+- LOCATION: 'NC' (confidence=0.85)
+- PERSON: 'Kingsley Hearth Restaurant\n•' (confidence=0.85)
+- PERSON: 'Kingsley Row' (confidence=0.85)
+- PERSON: 'Kingsley Neighborhood' (confidence=0.85)
+- LOCATION: 'Trafﬁc' (confidence=0.85)
+- PERSON: 'Kingsley' (confidence=0.85)
+- DATE_TIME: 'May 28' (confidence=0.85)
+- DATE_TIME: 'followed.\n5.Construction hours' (confidence=0.85)
+- DATE_TIME: '7:00 AM – 6:00 PM' (confidence=0.85)
+- DATE_TIME: 'Monday' (confidence=0.85)
+- DATE_TIME: '28104' (confidence=0.85)
+- DATE_TIME: 'November 9' (confidence=0.85)
+- PERSON: 'Hanley QuickServe Properties' (confidence=0.85)
+- PERSON: 'Briarcrest Hollow' (confidence=0.85)
+- LOCATION: 'Redﬁeld' (confidence=0.85)
+- DATE_TIME: 'October 4' (confidence=0.85)
+- PERSON: 'M. Callister  ' (confidence=0.85)
+- DATE_TIME: 'February 18' (confidence=0.85)
+- PERSON: 'Marcus J. Halden\n• Company/Developer' (confidence=0.85)
+- LOCATION: 'Larkspur' (confidence=0.85)
+- LOCATION: 'Huntington Neighborhood' (confidence=0.85)
+- PERSON: 'Larkspur Ofﬁce' (confidence=0.85)
+- DATE_TIME: 'January 12' (confidence=0.85)
+- DATE_TIME: '8:00 AM – 7:00 PM' (confidence=0.85)
+- LOCATION: 'VA' (confidence=0.85)
+
+
+Agent: Yes. Permits were approved for restaurants in multiple neighborhoods, including:
+
+- **Kingsley Neighborhood** — *Kingsley Hearth Restaurant*
+- **Maplewood Neighborhood** — *Maplewood QuickBite Restaurant*
+
+The Huntington permit was for a **community market & food court**, not specifically a restaurant.
+
+You: What is the average house price in the Rosedale neighborhood?
+[Router] Selected agent: structured
+Agent: An error occurred while processing your request with the structured agent: (psycopg.OperationalError) consuming input failed: server closed the connection unexpectedly
+	This probably means the server terminated abnormally
+	before or while processing the request.
+server closed the connection unexpectedly
+	This probably means the server terminated abnormally
+	before or while processing the request.
+[SQL: SELECT neighborhood_houses.id, neighborhood_houses.house_number, neighborhood_houses.neighborhood, neighborhood_houses.household_income, neighborhood_houses.house_size_sqf, neighborhood_houses.house_market_value, neighborhood_houses.family_size, neighborhood_houses.identified_race, neighborhood_houses.swimming_pool, neighborhood_houses.ownership 
+FROM neighborhood_houses 
+ LIMIT %(param_1)s::INTEGER]
+[parameters: {'param_1': 3}]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+
+You: What is the average house price in the Rosedale neighborhood?
+[Router] Selected agent: structured
+
+================================================================================
+Using Strucutred Data stored in PostgresQL database to answer question
+Performing a Fairness audit before providing answer
+================================================================================
+
+----------------------------------------------------------------------
+TABLE: neighborhood_houses
+DEMOGRAPHIC COLUMN: household_income
+----------------------------------------------------------------------
+
+Analyzing column: id
+Type: Numeric (distribution fairness)
+
+Mean by group:
+household_income
+30028      669.0
+30036     4613.0
+30037     2925.0
+30055     1941.0
+30074      405.0
+           ...  
+249894    2194.0
+249949     942.0
+249973    4444.0
+249977     202.0
+249993    1805.0
+Name: id, Length: 5467, dtype: float64
+Mean ratio (min/max): 0.000
+Large disparity detected
+
+Analyzing column: house_number
+Type: Numeric (distribution fairness)
+
+Mean by group:
+household_income
+30028      669.0
+30036     4613.0
+30037     2925.0
+30055     1941.0
+30074      405.0
+           ...  
+249894    2194.0
+249949     942.0
+249973    4444.0
+249977     202.0
+249993    1805.0
+Name: house_number, Length: 5467, dtype: float64
+Mean ratio (min/max): 0.000
+Large disparity detected
+
+Analyzing column: neighborhood
+Type: Categorical (distribution comparison)
+
+Percentage distribution by group:
+neighborhood      Ashford  Huntington  Kingsley  Maplewood  Rosedale
+household_income                                                    
+30028                 0.0         0.0       0.0      100.0       0.0
+30036               100.0         0.0       0.0        0.0       0.0
+30037                 0.0         0.0       0.0        0.0     100.0
+30055                 0.0         0.0       0.0      100.0       0.0
+30074                 0.0         0.0       0.0        0.0     100.0
+...                   ...         ...       ...        ...       ...
+249894              100.0         0.0       0.0        0.0       0.0
+249949              100.0         0.0       0.0        0.0       0.0
+249973                0.0         0.0       0.0        0.0     100.0
+249977                0.0         0.0       0.0      100.0       0.0
+249993                0.0         0.0       0.0        0.0     100.0
+
+[5467 rows x 5 columns]
+
+Analyzing column: house_size_sqf
+Type: Numeric (distribution fairness)
+
+Mean by group:
+household_income
+30028     2269.0
+30036     4692.0
+30037     2676.0
+30055     4763.0
+30074     3370.0
+           ...  
+249894    1690.0
+249949    3978.0
+249973    1888.0
+249977    1606.0
+249993    2645.0
+Name: house_size_sqf, Length: 5467, dtype: float64
+Mean ratio (min/max): 0.160
+Large disparity detected
+
+Analyzing column: house_market_value
+Type: Numeric (distribution fairness)
+
+Mean by group:
+household_income
+30028      193005.0
+30036     1359246.0
+30037     1304835.0
+30055     1105844.0
+30074      526616.0
+            ...    
+249894     317975.0
+249949    1459982.0
+249973    1021523.0
+249977    1243417.0
+249993     413807.0
+Name: house_market_value, Length: 5467, dtype: float64
+Mean ratio (min/max): 0.067
+Large disparity detected
+
+Analyzing column: family_size
+Type: Numeric (distribution fairness)
+
+Mean by group:
+household_income
+30028     1.0
+30036     5.0
+30037     1.0
+30055     3.0
+30074     5.0
+         ... 
+249894    3.0
+249949    6.0
+249973    1.0
+249977    5.0
+249993    2.0
+Name: family_size, Length: 5467, dtype: float64
+Mean ratio (min/max): 0.143
+Large disparity detected
+
+Analyzing column: identified_race
+Type: Categorical (distribution comparison)
+
+Percentage distribution by group:
+identified_race   Asian  Black  Hispanic  Other  White
+household_income                                      
+30028               0.0    0.0     100.0    0.0    0.0
+30036               0.0    0.0     100.0    0.0    0.0
+30037               0.0    0.0     100.0    0.0    0.0
+30055             100.0    0.0       0.0    0.0    0.0
+30074               0.0    0.0     100.0    0.0    0.0
+...                 ...    ...       ...    ...    ...
+249894              0.0  100.0       0.0    0.0    0.0
+249949              0.0  100.0       0.0    0.0    0.0
+249973              0.0    0.0       0.0  100.0    0.0
+249977              0.0    0.0       0.0    0.0  100.0
+249993            100.0    0.0       0.0    0.0    0.0
+
+[5467 rows x 5 columns]
+
+Analyzing column: swimming_pool
+Type: Binary (classification fairness)
+
+Selection Rate by Group:
+                  selection_rate
+household_income                
+30028                        0.0
+30036                        0.0
+30037                        0.0
+30055                        0.0
+30074                        0.0
+...                          ...
+249894                       0.0
+249949                       0.0
+249973                       0.0
+249977                       0.0
+249993                       0.0
+
+[5467 rows x 1 columns]
+Demographic Parity Difference: 1.0000
+Potential bias detected
+
+Analyzing column: ownership
+Type: Binary (classification fairness)
+
+Selection Rate by Group:
+                  selection_rate
+household_income                
+30028                        0.0
+30036                        0.0
+30037                        0.0
+30055                        0.0
+30074                        0.0
+...                          ...
+249894                       0.0
+249949                       0.0
+249973                       0.0
+249977                       0.0
+249993                       0.0
+
+[5467 rows x 1 columns]
+Demographic Parity Difference: 0.0000
+Within fairness threshold
+
+----------------------------------------------------------------------
+TABLE: neighborhood_houses
+DEMOGRAPHIC COLUMN: identified_race
+----------------------------------------------------------------------
+
+Analyzing column: id
+Type: Numeric (distribution fairness)
+
+Mean by group:
+identified_race
+Asian       2857.479964
+Black       2845.080340
+Hispanic    2753.215722
+Other       2731.419680
+White       2667.145911
+Name: id, dtype: float64
+Mean ratio (min/max): 0.933
+No major disparity
+
+Analyzing column: house_number
+Type: Numeric (distribution fairness)
+
+Mean by group:
+identified_race
+Asian       2857.479964
+Black       2845.080340
+Hispanic    2753.215722
+Other       2731.419680
+White       2667.145911
+Name: house_number, dtype: float64
+Mean ratio (min/max): 0.933
+No major disparity
+
+Analyzing column: neighborhood
+Type: Categorical (distribution comparison)
+
+Percentage distribution by group:
+neighborhood     Ashford  Huntington  Kingsley  Maplewood  Rosedale
+identified_race                                                    
+Asian              14.78       20.93     19.95      24.49     19.86
+Black              14.74       20.23     19.09      24.20     21.74
+Hispanic           14.81       19.10     20.02      27.42     18.65
+Other              14.89       21.03     19.34      24.98     19.76
+White              14.31       17.75     20.91      26.49     20.54
+
+Analyzing column: household_income
+Type: Numeric (distribution fairness)
+
+Mean by group:
+identified_race
+Asian       140459.620659
+Black       139900.642722
+Hispanic    141870.096892
+Other       134645.841884
+White       139378.630112
+Name: household_income, dtype: float64
+Mean ratio (min/max): 0.949
+No major disparity
+
+Analyzing column: house_size_sqf
+Type: Numeric (distribution fairness)
+
+Mean by group:
+identified_race
+Asian       2879.314337
+Black       2854.746692
+Hispanic    2876.762340
+Other       2861.952061
+White       2895.314126
+Name: house_size_sqf, dtype: float64
+Mean ratio (min/max): 0.986
+No major disparity
+
+Analyzing column: house_market_value
+Type: Numeric (distribution fairness)
+
+Mean by group:
+identified_race
+Asian       813941.445236
+Black       800168.930057
+Hispanic    782294.106947
+Other       808920.538267
+White       798496.228625
+Name: house_market_value, dtype: float64
+Mean ratio (min/max): 0.961
+No major disparity
+
+Analyzing column: family_size
+Type: Numeric (distribution fairness)
+
+Mean by group:
+identified_race
+Asian       4.027605
+Black       4.155955
+Hispanic    4.106033
+Other       3.989066
+White       4.094796
+Name: family_size, dtype: float64
+Mean ratio (min/max): 0.960
+No major disparity
+
+Analyzing column: swimming_pool
+Type: Binary (classification fairness)
+
+Selection Rate by Group:
+                 selection_rate
+identified_race                
+Asian                  0.196794
+Black                  0.213611
+Hispanic               0.209324
+Other                  0.184188
+White                  0.211896
+Demographic Parity Difference: 0.0294
+Within fairness threshold
+
+Analyzing column: ownership
+Type: Binary (classification fairness)
+
+Selection Rate by Group:
+                 selection_rate
+identified_race                
+Asian                       0.0
+Black                       0.0
+Hispanic                    0.0
+Other                       0.0
+White                       0.0
+Demographic Parity Difference: 0.0000
+Within fairness threshold
+
+----------------------------------------------------------------------
+TABLE: neighborhood_hospitals
+DEMOGRAPHIC COLUMN: average_daily_patients
+----------------------------------------------------------------------
+
+Analyzing column: id
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_daily_patients
+42     2.0
+50     4.0
+66     6.0
+101    3.0
+104    1.0
+112    5.0
+Name: id, dtype: float64
+Mean ratio (min/max): 0.167
+Large disparity detected
+
+Analyzing column: hospital_name
+Type: Categorical (distribution comparison)
+
+Percentage distribution by group:
+hospital_name           Ashford Regional Hospital  ...  St. Mary Medical Center
+average_daily_patients                             ...                         
+42                                            0.0  ...                      0.0
+50                                            0.0  ...                      0.0
+66                                            0.0  ...                      0.0
+101                                         100.0  ...                      0.0
+104                                           0.0  ...                    100.0
+112                                           0.0  ...                      0.0
+
+[6 rows x 6 columns]
+
+Analyzing column: neighborhood
+Type: Categorical (distribution comparison)
+
+Percentage distribution by group:
+neighborhood            Ashford  Kingsley  Maplewood  Rosedale
+average_daily_patients                                        
+42                          0.0       0.0        0.0     100.0
+50                          0.0     100.0        0.0       0.0
+66                          0.0       0.0      100.0       0.0
+101                       100.0       0.0        0.0       0.0
+104                         0.0     100.0        0.0       0.0
+112                         0.0     100.0        0.0       0.0
+
+Analyzing column: hospital_type
+Type: Categorical (distribution comparison)
+
+Percentage distribution by group:
+hospital_type           Community  Specialty  Trauma
+average_daily_patients                              
+42                          100.0        0.0     0.0
+50                          100.0        0.0     0.0
+66                            0.0      100.0     0.0
+101                           0.0        0.0   100.0
+104                           0.0        0.0   100.0
+112                         100.0        0.0     0.0
+
+Analyzing column: number_of_beds
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_daily_patients
+42      62.0
+50      82.0
+66      76.0
+101     93.0
+104    108.0
+112    107.0
+Name: number_of_beds, dtype: float64
+Mean ratio (min/max): 0.574
+Large disparity detected
+
+Analyzing column: emergency_capacity
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_daily_patients
+42      9.0
+50     19.0
+66      9.0
+101    15.0
+104    20.0
+112    20.0
+Name: emergency_capacity, dtype: float64
+Mean ratio (min/max): 0.450
+Large disparity detected
+
+Analyzing column: doctors
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_daily_patients
+42     15.0
+50     20.0
+66     19.0
+101    23.0
+104    27.0
+112    26.0
+Name: doctors, dtype: float64
+Mean ratio (min/max): 0.556
+Large disparity detected
+
+Analyzing column: nurses
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_daily_patients
+42     124.0
+50     164.0
+66     152.0
+101    186.0
+104    216.0
+112    214.0
+Name: nurses, dtype: float64
+Mean ratio (min/max): 0.574
+Large disparity detected
+
+Analyzing column: male_patients
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_daily_patients
+42     50.2
+50     47.6
+66     53.0
+101    53.6
+104    46.6
+112    54.2
+Name: male_patients, dtype: float64
+Mean ratio (min/max): 0.860
+No major disparity
+
+Analyzing column: female_patients
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_daily_patients
+42     49.8
+50     52.4
+66     47.0
+101    46.4
+104    53.4
+112    45.8
+Name: female_patients, dtype: float64
+Mean ratio (min/max): 0.858
+No major disparity
+
+Analyzing column: white_patients
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_daily_patients
+42     20.0
+50     26.0
+66     28.0
+101    43.0
+104    54.0
+112    56.0
+Name: white_patients, dtype: float64
+Mean ratio (min/max): 0.357
+Large disparity detected
+
+Analyzing column: black_patients
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_daily_patients
+42      5.0
+50      6.0
+66     13.0
+101    18.0
+104    19.0
+112    11.0
+Name: black_patients, dtype: float64
+Mean ratio (min/max): 0.263
+Large disparity detected
+
+Analyzing column: asian_patients
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_daily_patients
+42      5.0
+50      5.0
+66      5.0
+101    11.0
+104     9.0
+112    11.0
+Name: asian_patients, dtype: float64
+Mean ratio (min/max): 0.455
+Large disparity detected
+
+Analyzing column: hispanic_patients
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_daily_patients
+42     11.0
+50     10.0
+66     20.0
+101    27.0
+104    17.0
+112    28.0
+Name: hispanic_patients, dtype: float64
+Mean ratio (min/max): 0.357
+Large disparity detected
+
+Analyzing column: other_patients
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_daily_patients
+42     1.0
+50     3.0
+66     0.0
+101    2.0
+104    5.0
+112    6.0
+Name: other_patients, dtype: float64
+Mean ratio (min/max): 0.000
+Large disparity detected
+
+Analyzing column: average_wait_time_min
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_daily_patients
+42     24.6
+50     19.2
+66     50.8
+101    21.5
+104    11.0
+112    23.6
+Name: average_wait_time_min, dtype: float64
+Mean ratio (min/max): 0.217
+Large disparity detected
+
+Analyzing column: icu_beds
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_daily_patients
+42      6.0
+50     12.0
+66      9.0
+101     9.0
+104    15.0
+112    14.0
+Name: icu_beds, dtype: float64
+Mean ratio (min/max): 0.400
+Large disparity detected
+
+Analyzing column: annual_admissions
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_daily_patients
+42     15330.0
+50     18250.0
+66     24090.0
+101    36865.0
+104    37960.0
+112    40880.0
+Name: annual_admissions, dtype: float64
+Mean ratio (min/max): 0.375
+Large disparity detected
+
+----------------------------------------------------------------------
+TABLE: neighborhood_hospitals
+DEMOGRAPHIC COLUMN: average_wait_time_min
+----------------------------------------------------------------------
+
+Analyzing column: id
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_wait_time_min
+11.0    1.0
+19.2    4.0
+21.5    3.0
+23.6    5.0
+24.6    2.0
+50.8    6.0
+Name: id, dtype: float64
+Mean ratio (min/max): 0.167
+Large disparity detected
+
+Analyzing column: hospital_name
+Type: Categorical (distribution comparison)
+
+Percentage distribution by group:
+hospital_name          Ashford Regional Hospital  ...  St. Mary Medical Center
+average_wait_time_min                             ...                         
+11.0                                         0.0  ...                    100.0
+19.2                                         0.0  ...                      0.0
+21.5                                       100.0  ...                      0.0
+23.6                                         0.0  ...                      0.0
+24.6                                         0.0  ...                      0.0
+50.8                                         0.0  ...                      0.0
+
+[6 rows x 6 columns]
+
+Analyzing column: neighborhood
+Type: Categorical (distribution comparison)
+
+Percentage distribution by group:
+neighborhood           Ashford  Kingsley  Maplewood  Rosedale
+average_wait_time_min                                        
+11.0                       0.0     100.0        0.0       0.0
+19.2                       0.0     100.0        0.0       0.0
+21.5                     100.0       0.0        0.0       0.0
+23.6                       0.0     100.0        0.0       0.0
+24.6                       0.0       0.0        0.0     100.0
+50.8                       0.0       0.0      100.0       0.0
+
+Analyzing column: hospital_type
+Type: Categorical (distribution comparison)
+
+Percentage distribution by group:
+hospital_type          Community  Specialty  Trauma
+average_wait_time_min                              
+11.0                         0.0        0.0   100.0
+19.2                       100.0        0.0     0.0
+21.5                         0.0        0.0   100.0
+23.6                       100.0        0.0     0.0
+24.6                       100.0        0.0     0.0
+50.8                         0.0      100.0     0.0
+
+Analyzing column: number_of_beds
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_wait_time_min
+11.0    108.0
+19.2     82.0
+21.5     93.0
+23.6    107.0
+24.6     62.0
+50.8     76.0
+Name: number_of_beds, dtype: float64
+Mean ratio (min/max): 0.574
+Large disparity detected
+
+Analyzing column: average_daily_patients
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_wait_time_min
+11.0    104.0
+19.2     50.0
+21.5    101.0
+23.6    112.0
+24.6     42.0
+50.8     66.0
+Name: average_daily_patients, dtype: float64
+Mean ratio (min/max): 0.375
+Large disparity detected
+
+Analyzing column: emergency_capacity
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_wait_time_min
+11.0    20.0
+19.2    19.0
+21.5    15.0
+23.6    20.0
+24.6     9.0
+50.8     9.0
+Name: emergency_capacity, dtype: float64
+Mean ratio (min/max): 0.450
+Large disparity detected
+
+Analyzing column: doctors
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_wait_time_min
+11.0    27.0
+19.2    20.0
+21.5    23.0
+23.6    26.0
+24.6    15.0
+50.8    19.0
+Name: doctors, dtype: float64
+Mean ratio (min/max): 0.556
+Large disparity detected
+
+Analyzing column: nurses
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_wait_time_min
+11.0    216.0
+19.2    164.0
+21.5    186.0
+23.6    214.0
+24.6    124.0
+50.8    152.0
+Name: nurses, dtype: float64
+Mean ratio (min/max): 0.574
+Large disparity detected
+
+Analyzing column: male_patients
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_wait_time_min
+11.0    46.6
+19.2    47.6
+21.5    53.6
+23.6    54.2
+24.6    50.2
+50.8    53.0
+Name: male_patients, dtype: float64
+Mean ratio (min/max): 0.860
+No major disparity
+
+Analyzing column: female_patients
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_wait_time_min
+11.0    53.4
+19.2    52.4
+21.5    46.4
+23.6    45.8
+24.6    49.8
+50.8    47.0
+Name: female_patients, dtype: float64
+Mean ratio (min/max): 0.858
+No major disparity
+
+Analyzing column: white_patients
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_wait_time_min
+11.0    54.0
+19.2    26.0
+21.5    43.0
+23.6    56.0
+24.6    20.0
+50.8    28.0
+Name: white_patients, dtype: float64
+Mean ratio (min/max): 0.357
+Large disparity detected
+
+Analyzing column: black_patients
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_wait_time_min
+11.0    19.0
+19.2     6.0
+21.5    18.0
+23.6    11.0
+24.6     5.0
+50.8    13.0
+Name: black_patients, dtype: float64
+Mean ratio (min/max): 0.263
+Large disparity detected
+
+Analyzing column: asian_patients
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_wait_time_min
+11.0     9.0
+19.2     5.0
+21.5    11.0
+23.6    11.0
+24.6     5.0
+50.8     5.0
+Name: asian_patients, dtype: float64
+Mean ratio (min/max): 0.455
+Large disparity detected
+
+Analyzing column: hispanic_patients
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_wait_time_min
+11.0    17.0
+19.2    10.0
+21.5    27.0
+23.6    28.0
+24.6    11.0
+50.8    20.0
+Name: hispanic_patients, dtype: float64
+Mean ratio (min/max): 0.357
+Large disparity detected
+
+Analyzing column: other_patients
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_wait_time_min
+11.0    5.0
+19.2    3.0
+21.5    2.0
+23.6    6.0
+24.6    1.0
+50.8    0.0
+Name: other_patients, dtype: float64
+Mean ratio (min/max): 0.000
+Large disparity detected
+
+Analyzing column: icu_beds
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_wait_time_min
+11.0    15.0
+19.2    12.0
+21.5     9.0
+23.6    14.0
+24.6     6.0
+50.8     9.0
+Name: icu_beds, dtype: float64
+Mean ratio (min/max): 0.400
+Large disparity detected
+
+Analyzing column: annual_admissions
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_wait_time_min
+11.0    37960.0
+19.2    18250.0
+21.5    36865.0
+23.6    40880.0
+24.6    15330.0
+50.8    24090.0
+Name: annual_admissions, dtype: float64
+Mean ratio (min/max): 0.375
+Large disparity detected
+
+----------------------------------------------------------------------
+TABLE: education_survey
+DEMOGRAPHIC COLUMN: age
+----------------------------------------------------------------------
+
+Analyzing column: id
+Type: Numeric (distribution fairness)
+
+Mean by group:
+age
+18    1147.200000
+19    1202.787879
+20    1122.209302
+21    1204.119048
+22    1203.763158
+         ...     
+76    1483.180000
+77    1292.642857
+78    1254.950820
+79    1469.083333
+80    1495.200000
+Name: id, Length: 63, dtype: float64
+Mean ratio (min/max): 0.627
+Large disparity detected
+
+Analyzing column: neighborhood
+Type: Categorical (distribution comparison)
+
+Percentage distribution by group:
+neighborhood  Ashford  Huntington  Kingsley  Maplewood  Rosedale
+age                                                             
+18              24.44       13.33     11.11      24.44     26.67
+19              12.12       15.15     12.12      21.21     39.39
+20              27.91       13.95     16.28      13.95     27.91
+21               7.14       16.67     33.33      21.43     21.43
+22              26.32       18.42     10.53      23.68     21.05
+..                ...         ...       ...        ...       ...
+76              24.00       22.00     20.00      24.00     10.00
+77              11.90       14.29     16.67      33.33     23.81
+78              19.67       16.39     11.48      24.59     27.87
+79               8.33       22.22     19.44      27.78     22.22
+80              32.50       17.50     22.50      12.50     15.00
+
+[63 rows x 5 columns]
+
+Analyzing column: education_level
+Type: Categorical (distribution comparison)
+
+Percentage distribution by group:
+education_level  Bachelors   None  Postgraduate  Technical
+age                                                       
+18                   33.33  11.11         20.00      35.56
+19                   36.36  12.12         21.21      30.30
+20                   46.51   9.30         16.28      27.91
+21                   23.81  11.90         26.19      38.10
+22                   39.47   7.89         18.42      34.21
+..                     ...    ...           ...        ...
+76                   50.00   4.00         18.00      28.00
+77                   38.10   0.00         21.43      40.48
+78                   39.34  14.75         18.03      27.87
+79                   33.33  11.11         19.44      36.11
+80                   52.50   5.00         22.50      20.00
+
+[63 rows x 4 columns]
+
+Analyzing column: employment_status
+Type: Categorical (distribution comparison)
+
+Percentage distribution by group:
+employment_status  Full-time  Part-time  Retired  Unemployed
+age                                                         
+18                     40.00      26.67    20.00       13.33
+19                     45.45      27.27     9.09       18.18
+20                     46.51      25.58    13.95       13.95
+21                     47.62      16.67    23.81       11.90
+22                     47.37      18.42    10.53       23.68
+..                       ...        ...      ...         ...
+76                     50.00      22.00    14.00       14.00
+77                     33.33      26.19    21.43       19.05
+78                     40.98      31.15    16.39       11.48
+79                     47.22      16.67     8.33       27.78
+80                     55.00      15.00    10.00       20.00
+
+[63 rows x 4 columns]
+
+Analyzing column: years_of_experience
+Type: Numeric (distribution fairness)
+
+Mean by group:
+age
+18     0.000000
+19     0.393939
+20     0.511628
+21     0.928571
+22     1.157895
+        ...    
+76    19.000000
+77    18.500000
+78    21.754098
+79    19.361111
+80    19.625000
+Name: years_of_experience, Length: 63, dtype: float64
+Mean ratio (min/max): 0.000
+Large disparity detected
+
+Analyzing column: annual_income
+Type: Numeric (distribution fairness)
+
+Mean by group:
+age
+18    44632.844444
+19    43951.909091
+20    47054.930233
+21    44325.095238
+22    46318.921053
+          ...     
+76    48858.520000
+77    42545.738095
+78    44859.114754
+79    42113.694444
+80    49483.400000
+Name: annual_income, Length: 63, dtype: float64
+Mean ratio (min/max): 0.688
+Large disparity detected
+
+Analyzing column: gender
+Type: Categorical (distribution comparison)
+
+Percentage distribution by group:
+gender  Female   Male  Other
+age                         
+18       46.67  48.89   4.44
+19       54.55  45.45   0.00
+20       51.16  44.19   4.65
+21       45.24  52.38   2.38
+22       50.00  47.37   2.63
+..         ...    ...    ...
+76       52.00  42.00   6.00
+77       52.38  42.86   4.76
+78       42.62  54.10   3.28
+79       36.11  61.11   2.78
+80       45.00  45.00  10.00
+
+[63 rows x 3 columns]
+
+Analyzing column: household_size
+Type: Numeric (distribution fairness)
+
+Mean by group:
+age
+18    3.800000
+19    4.060606
+20    4.558140
+21    3.666667
+22    4.289474
+        ...   
+76    4.020000
+77    3.547619
+78    4.147541
+79    3.361111
+80    3.875000
+Name: household_size, Length: 63, dtype: float64
+Mean ratio (min/max): 0.727
+Large disparity detected
+
+----------------------------------------------------------------------
+TABLE: education_survey
+DEMOGRAPHIC COLUMN: annual_income
+----------------------------------------------------------------------
+
+Analyzing column: id
+Type: Numeric (distribution fairness)
+
+Mean by group:
+annual_income
+1149      2175.0
+1749       197.0
+1974       508.0
+2284      1921.0
+2529      1176.0
+           ...  
+104800    1242.0
+104821     821.0
+104895     310.0
+104900     677.0
+104963    1709.0
+Name: id, Length: 2519, dtype: float64
+Mean ratio (min/max): 0.000
+Large disparity detected
+
+Analyzing column: neighborhood
+Type: Categorical (distribution comparison)
+
+Percentage distribution by group:
+neighborhood   Ashford  Huntington  Kingsley  Maplewood  Rosedale
+annual_income                                                    
+1149               0.0         0.0       0.0        0.0     100.0
+1749             100.0         0.0       0.0        0.0       0.0
+1974               0.0         0.0     100.0        0.0       0.0
+2284               0.0         0.0       0.0      100.0       0.0
+2529               0.0         0.0       0.0      100.0       0.0
+...                ...         ...       ...        ...       ...
+104800             0.0       100.0       0.0        0.0       0.0
+104821             0.0         0.0       0.0      100.0       0.0
+104895             0.0       100.0       0.0        0.0       0.0
+104900             0.0       100.0       0.0        0.0       0.0
+104963             0.0         0.0       0.0        0.0     100.0
+
+[2519 rows x 5 columns]
+
+Analyzing column: education_level
+Type: Categorical (distribution comparison)
+
+Percentage distribution by group:
+education_level  Bachelors   None  Postgraduate  Technical
+annual_income                                             
+1149                   0.0  100.0           0.0        0.0
+1749                   0.0  100.0           0.0        0.0
+1974                   0.0  100.0           0.0        0.0
+2284                   0.0  100.0           0.0        0.0
+2529                   0.0  100.0           0.0        0.0
+...                    ...    ...           ...        ...
+104800                 0.0    0.0         100.0        0.0
+104821                 0.0    0.0         100.0        0.0
+104895                 0.0    0.0         100.0        0.0
+104900                 0.0    0.0         100.0        0.0
+104963                 0.0    0.0         100.0        0.0
+
+[2519 rows x 4 columns]
+
+Analyzing column: employment_status
+Type: Categorical (distribution comparison)
+
+Percentage distribution by group:
+employment_status  Full-time  Part-time  Retired  Unemployed
+annual_income                                               
+1149                     0.0        0.0      0.0       100.0
+1749                     0.0        0.0      0.0       100.0
+1974                     0.0        0.0      0.0       100.0
+2284                     0.0        0.0      0.0       100.0
+2529                     0.0        0.0      0.0       100.0
+...                      ...        ...      ...         ...
+104800                 100.0        0.0      0.0         0.0
+104821                 100.0        0.0      0.0         0.0
+104895                 100.0        0.0      0.0         0.0
+104900                 100.0        0.0      0.0         0.0
+104963                 100.0        0.0      0.0         0.0
+
+[2519 rows x 4 columns]
+
+Analyzing column: age
+Type: Numeric (distribution fairness)
+
+Mean by group:
+annual_income
+1149      33.0
+1749      53.0
+1974      66.0
+2284      68.0
+2529      50.0
+          ... 
+104800    71.0
+104821    22.0
+104895    75.0
+104900    42.0
+104963    28.0
+Name: age, Length: 2519, dtype: float64
+Mean ratio (min/max): 0.225
+Large disparity detected
+
+Analyzing column: years_of_experience
+Type: Numeric (distribution fairness)
+
+Mean by group:
+annual_income
+1149       0.0
+1749       0.0
+1974       0.0
+2284       0.0
+2529       0.0
+          ... 
+104800    23.0
+104821     4.0
+104895     8.0
+104900    11.0
+104963     8.0
+Name: years_of_experience, Length: 2519, dtype: float64
+Mean ratio (min/max): 0.000
+Large disparity detected
+
+Analyzing column: gender
+Type: Categorical (distribution comparison)
+
+Percentage distribution by group:
+gender         Female   Male  Other
+annual_income                      
+1149            100.0    0.0    0.0
+1749              0.0    0.0  100.0
+1974            100.0    0.0    0.0
+2284              0.0  100.0    0.0
+2529            100.0    0.0    0.0
+...               ...    ...    ...
+104800          100.0    0.0    0.0
+104821            0.0  100.0    0.0
+104895          100.0    0.0    0.0
+104900            0.0  100.0    0.0
+104963            0.0  100.0    0.0
+
+[2519 rows x 3 columns]
+
+Analyzing column: household_size
+Type: Numeric (distribution fairness)
+
+Mean by group:
+annual_income
+1149      2.0
+1749      7.0
+1974      4.0
+2284      7.0
+2529      6.0
+         ... 
+104800    1.0
+104821    4.0
+104895    7.0
+104900    7.0
+104963    4.0
+Name: household_size, Length: 2519, dtype: float64
+Mean ratio (min/max): 0.143
+Large disparity detected
+
+----------------------------------------------------------------------
+TABLE: education_survey
+DEMOGRAPHIC COLUMN: gender
+----------------------------------------------------------------------
+
+Analyzing column: id
+Type: Numeric (distribution fairness)
+
+Mean by group:
+gender
+Female    1297.723618
+Male      1291.384373
+Other     1208.605042
+Name: id, dtype: float64
+Mean ratio (min/max): 0.931
+No major disparity
+
+Analyzing column: neighborhood
+Type: Categorical (distribution comparison)
+
+Percentage distribution by group:
+neighborhood  Ashford  Huntington  Kingsley  Maplewood  Rosedale
+gender                                                          
+Female          19.10       20.69     19.77      19.60     20.85
+Male            18.23       19.89     20.76      20.92     20.21
+Other           15.13       29.41     23.53      21.85     10.08
+
+Analyzing column: education_level
+Type: Categorical (distribution comparison)
+
+Percentage distribution by group:
+education_level  Bachelors   None  Postgraduate  Technical
+gender                                                    
+Female               38.61  10.64         21.02      29.73
+Male                 40.96  10.34         18.23      30.47
+Other                42.86  10.92         19.33      26.89
+
+Analyzing column: employment_status
+Type: Categorical (distribution comparison)
+
+Percentage distribution by group:
+employment_status  Full-time  Part-time  Retired  Unemployed
+gender                                                      
+Female                 50.92      19.77    14.49       14.82
+Male                   51.30      18.63    14.36       15.71
+Other                  49.58      17.65    16.81       15.97
+
+Analyzing column: age
+Type: Numeric (distribution fairness)
+
+Mean by group:
+gender
+Female    49.260469
+Male      48.823204
+Other     51.974790
+Name: age, dtype: float64
+Mean ratio (min/max): 0.939
+No major disparity
+
+Analyzing column: years_of_experience
+Type: Numeric (distribution fairness)
+
+Mean by group:
+gender
+Female    11.389447
+Male      10.603788
+Other     11.420168
+Name: years_of_experience, dtype: float64
+Mean ratio (min/max): 0.929
+No major disparity
+
+Analyzing column: annual_income
+Type: Numeric (distribution fairness)
+
+Mean by group:
+gender
+Female    46384.345059
+Male      45943.429361
+Other     46221.537815
+Name: annual_income, dtype: float64
+Mean ratio (min/max): 0.990
+No major disparity
+
+Analyzing column: household_size
+Type: Numeric (distribution fairness)
+
+Mean by group:
+gender
+Female    3.995812
+Male      4.038674
+Other     3.983193
+Name: household_size, dtype: float64
+Mean ratio (min/max): 0.986
+No major disparity
+
+----------------------------------------------------------------------
+TABLE: neighborhood_schools
+DEMOGRAPHIC COLUMN: average_age
+----------------------------------------------------------------------
+
+Analyzing column: id
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_age
+6.3      1.0
+10.1     6.0
+10.9     2.0
+11.8    10.0
+12.6     5.0
+12.9     9.0
+14.1     4.0
+15.0     3.0
+15.3     8.0
+16.9     7.0
+Name: id, dtype: float64
+Mean ratio (min/max): 0.100
+Large disparity detected
+
+Analyzing column: school_name
+Type: Categorical (distribution comparison)
+
+Percentage distribution by group:
+school_name  Acadia  Denali  Everglades  Glacier  Grand Canyon  Olympic  Rocky Mountain  Yellowstone  Yosemite   Zion
+average_age                                                                                                          
+6.3             0.0     0.0         0.0      0.0           0.0      0.0             0.0        100.0       0.0    0.0
+10.1            0.0     0.0         0.0    100.0           0.0      0.0             0.0          0.0       0.0    0.0
+10.9            0.0     0.0         0.0      0.0           0.0      0.0             0.0          0.0     100.0    0.0
+11.8            0.0   100.0         0.0      0.0           0.0      0.0             0.0          0.0       0.0    0.0
+12.6            0.0     0.0       100.0      0.0           0.0      0.0             0.0          0.0       0.0    0.0
+12.9          100.0     0.0         0.0      0.0           0.0      0.0             0.0          0.0       0.0    0.0
+14.1            0.0     0.0         0.0      0.0           0.0      0.0             0.0          0.0       0.0  100.0
+15.0            0.0     0.0         0.0      0.0         100.0      0.0             0.0          0.0       0.0    0.0
+15.3            0.0     0.0         0.0      0.0           0.0    100.0             0.0          0.0       0.0    0.0
+16.9            0.0     0.0         0.0      0.0           0.0      0.0           100.0          0.0       0.0    0.0
+
+Analyzing column: neighborhood
+Type: Categorical (distribution comparison)
+
+Percentage distribution by group:
+neighborhood  Ashford  Huntington  Kingsley  Maplewood  Rosedale
+average_age                                                     
+6.3               0.0         0.0     100.0        0.0       0.0
+10.1              0.0         0.0       0.0      100.0       0.0
+10.9              0.0         0.0       0.0        0.0     100.0
+11.8              0.0       100.0       0.0        0.0       0.0
+12.6              0.0         0.0       0.0        0.0     100.0
+12.9              0.0         0.0     100.0        0.0       0.0
+14.1              0.0         0.0     100.0        0.0       0.0
+15.0            100.0         0.0       0.0        0.0       0.0
+15.3            100.0         0.0       0.0        0.0       0.0
+16.9              0.0         0.0       0.0      100.0       0.0
+
+Analyzing column: school_level
+Type: Categorical (distribution comparison)
+
+Percentage distribution by group:
+school_level  Elementary   High  Middle
+average_age                            
+6.3                100.0    0.0     0.0
+10.1               100.0    0.0     0.0
+10.9               100.0    0.0     0.0
+11.8                 0.0    0.0   100.0
+12.6                 0.0    0.0   100.0
+12.9                 0.0    0.0   100.0
+14.1                 0.0  100.0     0.0
+15.0                 0.0  100.0     0.0
+15.3                 0.0  100.0     0.0
+16.9                 0.0  100.0     0.0
+
+Analyzing column: number_of_students
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_age
+6.3      94.0
+10.1     96.0
+10.9    134.0
+11.8    144.0
+12.6    117.0
+12.9     89.0
+14.1    141.0
+15.0    222.0
+15.3    153.0
+16.9     88.0
+Name: number_of_students, dtype: float64
+Mean ratio (min/max): 0.396
+Large disparity detected
+
+Analyzing column: male_students
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_age
+6.3      49.0
+10.1     50.0
+10.9     68.0
+11.8     67.0
+12.6     57.0
+12.9     45.0
+14.1     75.0
+15.0    110.0
+15.3     70.0
+16.9     42.0
+Name: male_students, dtype: float64
+Mean ratio (min/max): 0.382
+Large disparity detected
+
+Analyzing column: female_students
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_age
+6.3      45.0
+10.1     46.0
+10.9     66.0
+11.8     77.0
+12.6     60.0
+12.9     44.0
+14.1     66.0
+15.0    112.0
+15.3     83.0
+16.9     46.0
+Name: female_students, dtype: float64
+Mean ratio (min/max): 0.393
+Large disparity detected
+
+Analyzing column: white_students
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_age
+6.3      45.0
+10.1     41.0
+10.9     67.0
+11.8     71.0
+12.6     60.0
+12.9     40.0
+14.1     71.0
+15.0    122.0
+15.3     82.0
+16.9     40.0
+Name: white_students, dtype: float64
+Mean ratio (min/max): 0.328
+Large disparity detected
+
+Analyzing column: black_students
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_age
+6.3     13.0
+10.1    19.0
+10.9    20.0
+11.8    20.0
+12.6    17.0
+12.9    20.0
+14.1    18.0
+15.0    37.0
+15.3    21.0
+16.9    15.0
+Name: black_students, dtype: float64
+Mean ratio (min/max): 0.351
+Large disparity detected
+
+Analyzing column: asian_students
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_age
+6.3      7.0
+10.1     8.0
+10.9    13.0
+11.8    11.0
+12.6    17.0
+12.9     9.0
+14.1    17.0
+15.0    19.0
+15.3     8.0
+16.9     8.0
+Name: asian_students, dtype: float64
+Mean ratio (min/max): 0.368
+Large disparity detected
+
+Analyzing column: hispanic_students
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_age
+6.3     22.0
+10.1    27.0
+10.9    31.0
+11.8    35.0
+12.6    16.0
+12.9    15.0
+14.1    29.0
+15.0    36.0
+15.3    37.0
+16.9    23.0
+Name: hispanic_students, dtype: float64
+Mean ratio (min/max): 0.405
+Large disparity detected
+
+Analyzing column: other_students
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_age
+6.3     7.0
+10.1    1.0
+10.9    3.0
+11.8    7.0
+12.6    7.0
+12.9    5.0
+14.1    6.0
+15.0    8.0
+15.3    5.0
+16.9    2.0
+Name: other_students, dtype: float64
+Mean ratio (min/max): 0.125
+Large disparity detected
+
+Analyzing column: number_of_teachers
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_age
+6.3      4.0
+10.1     4.0
+10.9     6.0
+11.8     7.0
+12.6     5.0
+12.9     4.0
+14.1     7.0
+15.0    11.0
+15.3     7.0
+16.9     4.0
+Name: number_of_teachers, dtype: float64
+Mean ratio (min/max): 0.364
+Large disparity detected
+
+Analyzing column: student_teacher_ratio
+Type: Numeric (distribution fairness)
+
+Mean by group:
+average_age
+6.3     23.50
+10.1    24.00
+10.9    22.33
+11.8    20.57
+12.6    23.40
+12.9    22.25
+14.1    20.14
+15.0    20.18
+15.3    21.86
+16.9    22.00
+Name: student_teacher_ratio, dtype: float64
+Mean ratio (min/max): 0.839
+No major disparity
+Agent: The average house price in **Rosedale** is **$814,310.30**.
+
+You: Which permits are related to swimming pools?
+[Router] Selected agent: unstructured
+
+================================================================================
+Using Unstrucutred Data stored in MongoDB database to answer question
+Seraching for PII data in source documents
+================================================================================
+
+WARNING: PII detected:
+- EMAIL_ADDRESS: 'jordan.matthews@example.com' (confidence=1.00)
+- EMAIL_ADDRESS: 'avery.collins@example.com' (confidence=1.00)
+- EMAIL_ADDRESS: 'jordan.ellis@example.com' (confidence=1.00)
+- DATE_TIME: 'February 16' (confidence=0.85)
+- DATE_TIME: 'August 16' (confidence=0.85)
+- DATE_TIME: '4821' (confidence=0.85)
+- PERSON: 'Kingsley Ridge Drive' (confidence=0.85)
+- PERSON: 'Jordan Matthews\n• Mailing Address' (confidence=0.85)
+- NRP: 'Kingsley\n•' (confidence=0.85)
+- PERSON: 'Veriﬁed' (confidence=0.85)
+- DATE_TIME: '8:00 AM' (confidence=0.85)
+- DATE_TIME: '6:00' (confidence=0.85)
+- DATE_TIME: 'Saturdays' (confidence=0.85)
+- DATE_TIME: '9:00 AM – 4:00' (confidence=0.85)
+- DATE_TIME: 'No Sunday or' (confidence=0.85)
+- DATE_TIME: 'at least 48 hours' (confidence=0.85)
+- LOCATION: 'advance.\n7' (confidence=0.85)
+- PERSON: 'Dana Whitﬁeld' (confidence=0.85)
+- DATE_TIME: 'October 3' (confidence=0.85)
+- DATE_TIME: 'April 3, 2018\n1' (confidence=0.85)
+- LOCATION: 'Maplewood Terrace Lane' (confidence=0.85)
+- PERSON: 'MPW-2249' (confidence=0.85)
+- PERSON: 'Melissa Grant•' (confidence=0.85)
+- PERSON: 'Jonathan' (confidence=0.85)
+- DATE_TIME: 'May 14, 2019\nPermit Expiration' (confidence=0.85)
+- DATE_TIME: 'November 14' (confidence=0.85)
+- LOCATION: 'Maplewood Glen Drive' (confidence=0.85)
+- PERSON: 'Jordan Ellis\n• Mailing Address' (confidence=0.85)
+- PERSON: 'Daniel Reeves•' (confidence=0.85)
+- PERSON: 'Lillian Carter\nTitle:' (confidence=0.85)
+
+
+Agent: The permits related to swimming pools are:
+
+1. **KNG-CNST-POOL-2026-0917** — Kingsley Neighborhood, residential in-ground swimming pool  
+2. **MPW-CNST-POOL-2017-5590** — Maplewood Neighborhood, residential in-ground swimming pool  
+3. **MPW-CNST-POOL-2019-8842** — Maplewood Neighborhood, residential in-ground swimming pool
+
+You: exit
+nina@MacBook-Pro-von-Nina ethical-multi-agent-orchestrator % python3 chat.py
+Connecting to Azure for authentication.
+To sign in, use a web browser to open the page https://login.microsoft.com/device and enter the code E8AJRWK47 to authenticate.
+
+                                   /\ 
+                                  /  \ 
+                                 /____\ 
+                ________________/______\_______________________
+               /                                               \
+              /_________________________________________________\
+             |   ____      ____      ____      ____      ____   |
+             |  | ▇▇ |    | ▇▇ |    | ▇▇ |    | ▇▇ |    | ▇▇ |  |
+             |  | ▇▇ |    | ▇▇ |    | ▇▇ |    | ▇▇ |    | ▇▇ |  |
+             |  |____|    |____|    |____|    |____|    |____|  |
+             |                                                  |
+             |        NEIGHBORHOOD INSIGHTS & DATA ASSISTANT    |
+             |__________________________________________________|
+    
+
+ This AI-powered assistant provides automatically generated responses. Please use discretion, as answers may contain inaccuracies or errors.
+
+Data comes from a structured demographics database, permit documents in NoSQL, and images stored in Azure.
+Data remains in its original systems and is not copied into the assistant.
+Embeddings and other AI artifacts are generated at runtime and are not permanently stored.
+
+Loading Structured Data Agent
+-------------------------------
+
+Loading Unstructured Data Agent
+---------------------------------
+/Users/nina/Documents/GitHub/ethical-multi-agent-orchestrator/agents/unstructured_data_agent.py:33: UserWarning: You appear to be connected to a CosmosDB cluster. For more information regarding feature compatibility and support please visit https://www.mongodb.com/supportability/cosmosdb
+  self.mongo_client = MongoClient(mongo_uri)
+/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/pymongo/synchronous/mongo_client.py:1776: UserWarning: You appear to be connected to a CosmosDB cluster. For more information regarding feature compatibility and support please visit https://www.mongodb.com/supportability/cosmosdb
+  self._resolve_srv()
+Loading documents from MongoDB...
+Embedding 20 documents...
+Vector index built.
+Vector DB size: 20
+
+Loading Multimodal Data Agent
+-------------------------------
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights: 100%|█████████████████████████████████████████████████████████████| 398/398 [00:00<00:00, 54200.88it/s]
+
+
+--------------------------------
+
+ Agent Chat Ready.
+
+Here are some examples of questions you can ask:
+  - Which demographic group has the most expensive homes?
+  - Was a permit approved for a restaurant in any of the neighborhoods?
+  - Find me a house like mine
+
+ Type 'exit' to quit.
+
+You: Find me a house like mine
+[Router] Selected agent: multimodal
+
+================================================================================
+Using Multimodal (Image files) Data stored in Azure Data Blob to answer question
+Scan images for harmful contente
+================================================================================
+Blob count: 12
+126_Briarwood_Drive_Ashford.jpg
+
+================================================================================
+Analysing image: 126_Briarwood_Drive_Ashford.jpg
+Analyzing Blob Image: 126_Briarwood_Drive_Ashford.jpg
+Hate 0
+SelfHarm 0
+Sexual 0
+Violence 2
+Warning: Harmful content detected in blob image: 126_Briarwood_Drive_Ashford.jpg
+
+12_Kingsley_Drive.jpg
+
+================================================================================
+Analysing image: 12_Kingsley_Drive.jpg
+Analyzing Blob Image: 12_Kingsley_Drive.jpg
+Hate 0
+SelfHarm 0
+Sexual 0
+Violence 0
+No harmful content detected in blob image: 12_Kingsley_Drive.jpg
+
+15_Rosedale_Avenue.jpg
+
+================================================================================
+Analysing image: 15_Rosedale_Avenue.jpg
+Analyzing Blob Image: 15_Rosedale_Avenue.jpg
+Hate 0
+SelfHarm 0
+Sexual 0
+Violence 0
+No harmful content detected in blob image: 15_Rosedale_Avenue.jpg
+
+203_Hillcrest_Lane_Kingsley.jpg
+
+================================================================================
+Analysing image: 203_Hillcrest_Lane_Kingsley.jpg
+Analyzing Blob Image: 203_Hillcrest_Lane_Kingsley.jpg
+Hate 0
+SelfHarm 0
+Sexual 0
+Violence 0
+No harmful content detected in blob image: 203_Hillcrest_Lane_Kingsley.jpg
+
+274_Maplewood_Crescent.jpg
+
+================================================================================
+Analysing image: 274_Maplewood_Crescent.jpg
+Analyzing Blob Image: 274_Maplewood_Crescent.jpg
+Hate 0
+SelfHarm 0
+Sexual 0
+Violence 0
+No harmful content detected in blob image: 274_Maplewood_Crescent.jpg
+
+33_Maplewood_Lane.jpg
+
+================================================================================
+Analysing image: 33_Maplewood_Lane.jpg
+Analyzing Blob Image: 33_Maplewood_Lane.jpg
+Hate 0
+SelfHarm 0
+Sexual 0
+Violence 0
+No harmful content detected in blob image: 33_Maplewood_Lane.jpg
+
+402_Rosedale_Parkway.jpg
+
+================================================================================
+Analysing image: 402_Rosedale_Parkway.jpg
+Analyzing Blob Image: 402_Rosedale_Parkway.jpg
+Hate 0
+SelfHarm 0
+Sexual 0
+Violence 0
+No harmful content detected in blob image: 402_Rosedale_Parkway.jpg
+
+48_Oakridge_Court_Kingsley.jpg
+
+================================================================================
+Analysing image: 48_Oakridge_Court_Kingsley.jpg
+Analyzing Blob Image: 48_Oakridge_Court_Kingsley.jpg
+Hate 0
+SelfHarm 0
+Sexual 0
+Violence 0
+No harmful content detected in blob image: 48_Oakridge_Court_Kingsley.jpg
+
+510_West_Maplewood_Road.jpg
+
+================================================================================
+Analysing image: 510_West_Maplewood_Road.jpg
+Analyzing Blob Image: 510_West_Maplewood_Road.jpg
+Hate 0
+SelfHarm 0
+Sexual 0
+Violence 0
+No harmful content detected in blob image: 510_West_Maplewood_Road.jpg
+
+77_Maple_Ridge_Road_Rosedale.jpg
+
+================================================================================
+Analysing image: 77_Maple_Ridge_Road_Rosedale.jpg
+Analyzing Blob Image: 77_Maple_Ridge_Road_Rosedale.jpg
+Hate 0
+SelfHarm 0
+Sexual 0
+Violence 0
+No harmful content detected in blob image: 77_Maple_Ridge_Road_Rosedale.jpg
+
+82_Kingsley_Park_Drive.jpg
+
+================================================================================
+Analysing image: 82_Kingsley_Park_Drive.jpg
+Analyzing Blob Image: 82_Kingsley_Park_Drive.jpg
+Hate 0
+SelfHarm 0
+Sexual 0
+Violence 0
+No harmful content detected in blob image: 82_Kingsley_Park_Drive.jpg
+
+9_Ashford_Terrace.jpg
+
+================================================================================
+Analysing image: 9_Ashford_Terrace.jpg
+Analyzing Blob Image: 9_Ashford_Terrace.jpg
+Hate 0
+SelfHarm 0
+Sexual 0
+Violence 0
+No harmful content detected in blob image: 9_Ashford_Terrace.jpg
+
+
+Top matches:
+48 Oakridge Court Kingsley | similarity: 0.9484
+9 Ashford Terrace | similarity: 0.9089
+77 Maple Ridge Road Rosedale | similarity: 0.8939
+
+================================================================================
+Analysing image: 48_Oakridge_Court_Kingsley.jpg
+Analyzing Blob Image: 48_Oakridge_Court_Kingsley.jpg
+Hate 0
+SelfHarm 0
+Sexual 0
+Violence 0
+No harmful content detected in blob image: 48_Oakridge_Court_Kingsley.jpg
+
+
+================================================================================
+Analysing image: 9_Ashford_Terrace.jpg
+Analyzing Blob Image: 9_Ashford_Terrace.jpg
+Hate 0
+SelfHarm 0
+Sexual 0
+Violence 0
+No harmful content detected in blob image: 9_Ashford_Terrace.jpg
+
+
+================================================================================
+Analysing image: 77_Maple_Ridge_Road_Rosedale.jpg
+Analyzing Blob Image: 77_Maple_Ridge_Road_Rosedale.jpg
+Hate 0
+SelfHarm 0
+Sexual 0
+Violence 0
+No harmful content detected in blob image: 77_Maple_Ridge_Road_Rosedale.jpg
+
+Agent: Here are the top similar houses I found:
+- 48 Oakridge Court Kingsley (similarity: 0.9484)
+- 9 Ashford Terrace (similarity: 0.9089)
+- 77 Maple Ridge Road Rosedale (similarity: 0.8939)
+
+You: exit
+nina@MacBook-Pro-von-Nina ethical-multi-agent-orchestrator % pbpaste > terminal_output.txt
+nina@MacBook-Pro-von-Nina ethical-multi-agent-orchestrator % 
